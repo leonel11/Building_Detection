@@ -1,0 +1,14 @@
+# Files
+*.log
+*.txt
+*.png
+*.jpg
+*.csv
+*.caffemodel
+
+#Folders
+.idea
+__pycache__
+.ipynb_checkpoints
+data
+Theory/_Other_works
