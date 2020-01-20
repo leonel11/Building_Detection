@@ -29,12 +29,12 @@ def init_argparse():
         '-f',
         '--file',
         nargs='?',
-        help='file name',
+        help='file name or folder',
         type=str)
     return parser
 
 
-def make_prediction(img_file):
+def make_prediction(img_file, img_idx=0):
     img = Image.open(img_file)
     h_count, w_count = img.size[0] // SAMPLE_SIDE, img.size[1] // SAMPLE_SIDE
     res = np.zeros((h_count*SAMPLE_SIDE, w_count*SAMPLE_SIDE, 1))
@@ -58,13 +58,18 @@ def make_prediction(img_file):
     np.place(res, res>=THRESHOLD, [1.0])
     np.place(res, res<THRESHOLD, [0.0])
     im_res = np.array(255*res, dtype=np.int)
-    scipy.misc.imsave('res_.jpg', im_res[:,:,0])
+    scipy.misc.imsave('../output/res_{:04d}.jpg'.format(img_idx), im_res[:,:,0])
 
 
 def main():
     args = init_argparse().parse_args()
-    img_file = args.file
-    make_prediction(img_file)
+    path = args.file
+    if os.path.isfile(path):
+        make_prediction(path)
+    if os.path.isdir(path):
+        for idx, file in enumerate(os.listdir(path)):
+            if file.endswith('.jpg'):
+                make_prediction(os.path.join(path, idx))
 
 
 if __name__ == '__main__':
